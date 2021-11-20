@@ -1,47 +1,63 @@
-const { request, json } = require('express');
-const express = require('express');
 
+const { request, response } = require('express');
+const express = require('express');
 const app = express();
 app.use(express.json());
 
-app.get('/projects', (request, response) => {
-    const {title, owner} = request.query;
-    console.log(title)
-    console.log(owner)
+const { uuid } = require('uuidv4') 
 
-    return response.json([
-        'project 1',
-        'project 2',
-    ]);
-});
 
-app.post('/projects', (request, response) => {
-    const body = request.body;
+const projects = [];
+
+app.get('/sites', (request, response) => {
+
+    const query = request.query;
+    console.log(query)
+
+    return response.json(projects)
+})
+
+//Method Post simple
+app.post('/sites', (request,response) => {
+    const body = request.body
+    const {title, owner} = request.body
     console.log(body)
-return response.json([
-    'Project 1',
-    'Project 2',
-    'Project 3',
-]);
+
+    return response.json([
+        'facebook.com',
+        'nerak.com',
+        {title},
+        {owner}
+    ])
 });
 
-app.put('/projects/:id', (request, response) => {
-    const { id } = request.params;
-    console.log(id)
+//Method Post with adiction
+app.post('/sites/add', (request, response) => {
+const {title, owner} = request.body;
+const project = {id: uuid(),title, owner}
+    projects.push(project)
+    return response.json(projects)
+})
+
+app.put('/sites/:id', (request, response) => {
+    const params = request.params;
+    console.log(params)
     return response.json([
-        'project 4',
-        'Project 2',
-        'Project 3',
-    ]);
+        'vmonster.com',
+        'vercel.com',
+    ])
 });
 
-app.delete('/projects/:id', (request, response) => {
+app.delete('/sites/:id', (request, response) => {
+        const params = request.params
+        console.log(params)
     return response.json([
-            'project 2',
-            'project 3',
+        'vmonster.com'
     ])
 })
 
+
 app.listen(3333, () => {
-    console.log('🚀 Back-end start!')
-});
+    console.log('Backend Start! 🚀')
+   
+})
