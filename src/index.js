@@ -1,8 +1,11 @@
 
-const { request, response } = require('express');
+const cors = require('cors');
 const express = require('express');
 const app = express();
+
+
 app.use(express.json());
+app.use(cors());
 
 const { uuid } = require('uuidv4') 
 
@@ -40,20 +43,40 @@ const project = {id: uuid(),title, owner}
 })
 
 app.put('/sites/:id', (request, response) => {
-    const params = request.params;
-    console.log(params)
-    return response.json([
-        'vmonster.com',
-        'vercel.com',
-    ])
+    // const params = request.params;
+    // console.log(params)
+    const { id } = request.params;
+    const {title, owner} = request.body;
+
+    const projectsIndex = projects.findIndex(project => project.id === id);
+
+    if(projectsIndex < 0){
+        return response.status(400).json({ error: 'Project not found'})
+    }
+
+    const project = {
+        id,
+        title,
+        owner,
+    };
+
+    projects[projectsIndex] = project;
+
+    return response.json(project)
 });
 
 app.delete('/sites/:id', (request, response) => {
-        const params = request.params
-        console.log(params)
-    return response.json([
-        'vmonster.com'
-    ])
+        const {id} = request.params
+        console.log(id)
+
+        const projectsIndex = projects.projectsIndex(project => project.id === id)
+
+        if(projectsIndex < 0){
+            return response.status(400).json({error: 'Project not found.'})
+        }
+
+        projects.splice(projectsIndex, 1)
+    return response.status(204).send()
 })
 
 
